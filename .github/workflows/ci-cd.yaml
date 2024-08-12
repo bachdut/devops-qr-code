@@ -1,0 +1,61 @@
+name: CI/CD Pipeline
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push API Docker image
+      run: |
+        docker build -t achdutbar/bardevopsproj/api:latest -f api/Dockerfile .
+        docker push achdutbar/bardevopsproj/api:latest
+
+    - name: Build and push Front-End Docker image
+      run: |
+        docker build -t achdutbar/bardevopsproj/frontend:latest -f front-end/Dockerfile .
+        docker push achdutbar/bardevopsproj/frontend:latest
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-push
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
+
+  #   - name: Configure AWS credentials
+  #     uses: aws-actions/configure-aws-credentials@v1
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: ${{ secrets.AWS_REGION }}
+
+  #   - name: Deploy to EKS
+  #     run: |
+  #       aws eks update-kubeconfig --name your-cluster-name --region $AWS_REGION
+  #       kubectl apply -f k8s/deployment.yaml
+  #       kubectl apply -f k8s/service.yaml
