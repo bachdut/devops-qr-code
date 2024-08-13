@@ -37,7 +37,7 @@ jobs:
 
     - name: Build and push Front-End Docker image
       run: |
-        docker build -t achdutbar/bardevopsproj:frontend-latest -f front-end/Dockerfile .
+        docker build -t achdutbar/bardevopsproj:frontend-latest -f front-end-nextjs/Dockerfile .
         docker push achdutbar/bardevopsproj:frontend-latest
 
   # deploy:
