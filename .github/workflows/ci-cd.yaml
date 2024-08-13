@@ -32,13 +32,13 @@ jobs:
 
     - name: Build and push API Docker image
       run: |
-        docker build -t achdutbar/bardevopsproj/api:latest -f api/Dockerfile .
-        docker push achdutbar/bardevopsproj/api:latest
+        docker build -t achdutbar/bardevopsproj:api-latest -f api/Dockerfile .
+        docker push achdutbar/bardevopsproj:api-latest
 
     - name: Build and push Front-End Docker image
       run: |
-        docker build -t achdutbar/bardevopsproj/frontend:latest -f front-end/Dockerfile .
-        docker push achdutbar/bardevopsproj/frontend:latest
+        docker build -t achdutbar/bardevopsproj:frontend-latest -f front-end/Dockerfile .
+        docker push achdutbar/bardevopsproj:frontend-latest
 
   # deploy:
   #   runs-on: ubuntu-latest
